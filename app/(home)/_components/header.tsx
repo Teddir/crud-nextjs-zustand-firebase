@@ -14,18 +14,28 @@ export default function Header() {
   const { status, data: session } = useSession();
   const setUser = useAuthStore((state) => state.setUser);
 
-  const validasiAuth = useCallback(() => {
+  const validasiAuth = useCallback(async () => {
     if (status == "unauthenticated") return router.replace("/login");
 
-    if (session?.user?.email) {
-      // If there's a session, update the Zustand store
-      setUser({
-        name: session.user?.name ?? "",
-        email: session.user?.email ?? "",
+    try {
+      let response = await fetch(`/api/profile?uid=${session?.user.id}`, {
+        method: "GET",
       });
-    } else {
-      // If there's no session, reset the user in the Zustand store
-      setUser(null);
+      let res = await response.json();
+      console.log(res);
+
+      if (session?.user?.email) {
+        // If there's a session, update the Zustand store
+        setUser({
+          username: res?.datas?.username ?? "",
+          email: session.user?.email ?? "",
+        });
+      } else {
+        // If there's no session, reset the user in the Zustand store
+        setUser(null);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, [status, session]);
 

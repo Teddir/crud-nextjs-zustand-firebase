@@ -9,22 +9,25 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Profile() {
   const { user } = useAuthStore();
+  const { data: session } = useSession();
   const { toast } = useToast();
-  const [forms, setForms] = useState({ new_email: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
+  const [forms, setForms] = useState({
+    username: user?.username,
+    password: "",
+  });
+  const setUser = useAuthStore((state) => state.setUser);
 
   async function updateAccount() {
     try {
       let response = await fetch("/api/profile", {
         method: "POST",
         body: JSON.stringify({
-          new_email: forms?.new_email,
-          password: forms?.password,
-          email: user?.email,
+          username: forms?.username,
+          uid: session?.user?.id,
         }),
       });
       let res = await response.json();
@@ -32,8 +35,12 @@ export default function Profile() {
       if (res?.error) throw new Error(res?.error);
 
       toast({
-        description: "Email updated.",
-        duration: 1000,
+        description: "User updated.",
+        duration: 3000,
+      });
+      setUser({
+        username: forms?.username,
+        email: user?.email,
       });
       document.getElementById("closeDialog")?.click();
     } catch (error) {
@@ -43,7 +50,7 @@ export default function Profile() {
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
           description: error?.message ?? error,
-          duration: 1000,
+          duration: 3000,
         });
       }
     }
@@ -51,119 +58,135 @@ export default function Profile() {
 
   async function deleteAccount() {
     try {
-      console.log(user);
+      let response = await fetch("/api/profile", {
+        method: "DELETE",
+        body: JSON.stringify({
+          email: user?.email,
+          password: forms?.password,
+        }),
+      });
+      let res = await response.json();
+
+      if (res?.error) throw new Error(res?.error);
+
+      toast({
+        description: "User deleted.",
+        duration: 3000,
+      });
+      setUser({
+        username: forms?.username,
+        email: user?.email,
+      });
+      document.getElementById("closeDialog")?.click();
+      signOut();
     } catch (error) {
-      console.log(error);
+      if (error instanceof Error) {
+        console.log(error);
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error?.message ?? error,
+          duration: 3000,
+        });
+      }
     }
   }
 
   return (
     <div className='flex w-screen h-screen max-h-screen justify-center place-content-center'>
-      <div className='max-w-[50vw] w-full'>
+      <div className='md:max-w-[60vw]  w-full'>
         <Header />
-        <div className='p-24 flex flex-col gap-4'>
+        <div className='xl:p-24 md:p-16 p-12 flex flex-col gap-4'>
           <>
-            <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl capitalize'>
-              Your Profile {user?.email?.split("@")?.[0]}{" "}
-            </h1>
-            <div className='flex flex-row items-center gap-4'>
-              <p className='leading-7 [&:not(:first-child)]:mt-6'>
-                email : {user?.email}
-              </p>
+            <div className='flex sm:flex-row flex-col sm:items-center items-start gap-4'>
+              <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl capitalize'>
+                Your Profile {user?.username}{" "}
+              </h1>
+
               <CustomDialog
                 title='Edit profile'
                 desc="Make changes to your profile here. Click save when you're done."
                 handleSubmit={{
                   onClick: () => updateAccount(),
                   text: "Save Changes",
-                  disabled: !forms?.password,
+                  disabled: false,
                 }}
                 renderContent={
                   <div className='grid gap-4 py-4'>
                     <div className='grid grid-cols-4 items-center gap-4'>
                       <Label
-                        htmlFor='email'
+                        htmlFor='username'
                         className='text-right'>
-                        email
+                        username
                       </Label>
                       <Input
-                        id='email'
-                        value={forms?.new_email}
+                        id='username'
+                        value={forms?.username}
                         className='col-span-3'
                         onChange={(val) =>
                           setForms((old) => ({
                             ...old,
-                            new_email: val?.target?.value,
+                            username: val?.target?.value,
                           }))
                         }
                       />
                     </div>
-                    {forms?.new_email?.length > 0 && (
-                      <>
-                        <p className='leading-7 [&:not(:first-child)]:mt-6'>
-                          Masukkan password anda untuk melanjutkan proses update
-                          email
-                        </p>
-                        <div className='grid grid-cols-4 items-center gap-4'>
-                          <Label
-                            htmlFor='password'
-                            className='text-right'>
-                            Password
-                          </Label>
-                          <div className='flex col-span-3 flex-row items-center gap-6'>
-                            <div>
-                              <Input
-                                id='password'
-                                type={showPassword ? "text" : "password"}
-                                value={forms?.password}
-                                onChange={(val) =>
-                                  setForms((old) => ({
-                                    ...old,
-                                    password: val?.target?.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                            <div onClick={() => setShowPassword(!showPassword)}>
-                              {showPassword ? (
-                                <EyeOpenIcon
-                                  width={24}
-                                  height={24}
-                                />
-                              ) : (
-                                <EyeClosedIcon
-                                  width={24}
-                                  height={24}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
                   </div>
                 }>
-                <Button variant={"ghost"}>
+                <Button
+                  variant={"ghost"}
+                  className='p-4 rounded-full h-full'>
                   <Pencil1Icon
-                    width={24}
-                    height={24}
+                    width={42}
+                    height={42}
                     className='text-primary'
                   />
                 </Button>
               </CustomDialog>
             </div>
-            <p className='leading-7 [&:not(:first-child)]:mt-6'>
-              Once upon a time, in a far-off land, there was a very lazy king
-              who spent all day lounging on his throne. One day, his advisors
-              came to him with a problem: the kingdom was running out of money.
-            </p>
+
+            <div className='flex flex-row items-center gap-4'>
+              <p className='leading-7 [&:not(:first-child)]:mt-6'>
+                {user?.email}
+              </p>
+            </div>
           </>
-          <Button
-            className='flex items-start w-fit p-0 text-destructive'
-            variant={"link"}
-            onClick={() => deleteAccount()}>
-            Delete Account
-          </Button>
+          <CustomDialog
+            title='Edit profile'
+            desc="Make changes to your profile here. Click save when you're done."
+            handleSubmit={{
+              onClick: () => deleteAccount(),
+              text: "Delete Account",
+              disabled: false,
+            }}
+            renderContent={
+              <div className='grid gap-4 py-4'>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label
+                    htmlFor='password'
+                    className='text-right'>
+                    password
+                  </Label>
+                  <Input
+                    id='password'
+                    value={forms?.password}
+                    className='col-span-3'
+                    onChange={(val) =>
+                      setForms((old) => ({
+                        ...old,
+                        password: val?.target?.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+            }>
+            <Button
+              className='flex items-start w-fit p-0 text-destructive'
+              variant={"link"}>
+              Delete Account
+            </Button>
+          </CustomDialog>
         </div>
       </div>
     </div>

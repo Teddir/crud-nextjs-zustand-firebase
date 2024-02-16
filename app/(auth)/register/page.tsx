@@ -25,6 +25,9 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "../_components/navbar";
 
 const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
   email: z
     .string()
     .min(1, {
@@ -36,8 +39,8 @@ const formSchema = z.object({
   }),
 });
 
-export default function Login() {
-  const { data: session, status } = useSession();
+export default function Register() {
+  const { status } = useSession();
   const router = useRouter();
   const navbar = useMemo(
     () => (
@@ -121,6 +124,21 @@ const Body = () => {
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-8'>
+              <FormField
+                control={form.control}
+                name='username'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder='username'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name='email'

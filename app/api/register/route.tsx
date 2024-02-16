@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase.config";
+import app, { auth } from "../../firebase.config";
+
+import { doc, getFirestore, serverTimestamp, setDoc } from "firebase/firestore";
+const firestore = getFirestore(app);
 
 export async function POST(req: { json: () => any }) {
   const body = await req.json();
   // console.log(body);
-  const { email = "", password = "" } = body || {};
+  const { username = "", email = "", password = "" } = body || {};
 
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -13,6 +16,14 @@ export async function POST(req: { json: () => any }) {
       email,
       password
     );
+
+    let created_at = serverTimestamp();
+    await setDoc(doc(firestore, `user`, userCredential?.user?.uid), {
+      username,
+      email,
+      created_at,
+    });
+
     return NextResponse.json(
       { status: "success", message: `User created: ${userCredential.user}` },
       { status: 200 }

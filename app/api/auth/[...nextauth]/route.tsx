@@ -2,7 +2,6 @@ import { auth } from "@/app/firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import NextAuth from "next-auth/next";
 import Credentials from "next-auth/providers/credentials";
-import { signOut } from "next-auth/react";
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -21,8 +20,12 @@ const handler = NextAuth({
             credentials.password
           );
           const user = userCredential.user;
+
           // Return user object to be saved in the NextAuth session
-          return { id: user.uid, email: user.email };
+          return {
+            id: user.uid,
+            email: user.email,
+          };
         } catch (error) {
           console.error("Firebase auth error", error);
           return null;
@@ -37,7 +40,8 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       return { ...token, ...user };
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
+      session.user.id = token?.id;
       return session;
     },
   },
