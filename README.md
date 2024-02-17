@@ -88,7 +88,7 @@ const firebaseConfig = {
 export default firebaseConfig;
 ```
 
-Update environment variables in `.env.local` for sensitive credentials.
+Update environment variables in `.env.example` for sensitive credentials.
 
 ## Testing with Jest
 
