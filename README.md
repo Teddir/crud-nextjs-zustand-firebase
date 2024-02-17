@@ -123,12 +123,12 @@ This section guides you through the process of getting the website up and runnin
 
 ### Cloning the Repository
 
-1. **Find the Repository URL**: Navigate to the GitHub page of the project and locate the repository's URL. It should look something like `https://github.com/username/project-name.git`.
+1. **Find the Repository URL**: Navigate to the GitHub page of the project and locate the repository's URL. It should look something like `https://github.com/Teddir/crud-nextjs-zustand-firebase`.
 
-2. **Clone the Repository**: Open a terminal on your computer and run the following command, replacing `<repository-url>` with the actual URL of the repository:
+2. **Clone the Repository**: Open a terminal on your computer and run the following command, replacing `https://github.com/Teddir/crud-nextjs-zustand-firebase.git` with the actual URL of the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Teddir/crud-nextjs-zustand-firebase.git
    ```
 
    This command downloads the project files to your local machine.
@@ -140,10 +140,10 @@ Once you have cloned the repository, you need to install the necessary dependenc
 1. **Navigate to the Project Directory**: Change your current directory to the project's root directory using the `cd` command:
 
    ```bash
-   cd project-name
+   cd crud-nextjs-zustand-firebase
    ```
 
-   Replace `project-name` with the name of the folder created by the `git clone` command.
+   Replace `crud-nextjs-zustand-firebase` with the name of the folder created by the `git clone` command.
 
 2. **Install Dependencies**: Run the following command to install the project dependencies:
 
@@ -189,13 +189,13 @@ If you're interested in contributing to the project, here's a guide to help you 
 
 ### Creating a New Branch
 
-Before making any changes, it's a good practice to create a new branch. This keeps the main branch stable and makes it easier to manage multiple contributions.
+Before making any changes, it's a good practice to create a new branch. This keeps the master branch stable and makes it easier to manage multiple contributions.
 
-1. **Check Out to the Main Branch**: Ensure you're on the main branch and it's up to date.
+1. **Check Out to the Master Branch**: Ensure you're on the master branch and it's up to date.
 
    ```bash
-   git checkout main
-   git pull origin main
+   git checkout master
+   git pull origin master
    ```
 
 2. **Create and Switch to a New Branch**: Replace `<branch-name>` with a descriptive name for your new branch.
