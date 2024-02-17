@@ -5,7 +5,7 @@ import app, { auth } from "../../firebase.config";
 import { doc, getFirestore, serverTimestamp, setDoc } from "firebase/firestore";
 const firestore = getFirestore(app);
 
-export async function POST(req: { json: () => any }) {
+export async function POST(req: Request) {
   const body = await req.json();
   // console.log(body);
   const { username = "", email = "", password = "" } = body || {};

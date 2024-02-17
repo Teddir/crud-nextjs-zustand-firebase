@@ -1,19 +1,13 @@
 "use client";
-import { SiteIcon } from "@/public";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-
+import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -25,22 +19,29 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "../_components/navbar";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  username: z
+    .string()
+    .min(2, {
+      message: "Username must be at least 2 characters.",
+    })
+    .default(""),
   email: z
     .string()
     .min(1, {
       message: "email must be at least 1 characters.",
     })
-    .email("This is not a valid email."),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
+    .email("This is not a valid email.")
+    .default(""),
+  password: z
+    .string()
+    .min(8, {
+      message: "Password must be at least 8 characters.",
+    })
+    .default(""),
 });
 
 export default function Register() {
-  const { status } = useSession();
+  const { status } = useSession() || { status: "unauthenticated" };
   const router = useRouter();
   const navbar = useMemo(
     () => (
@@ -133,6 +134,7 @@ const Body = () => {
                       <Input
                         placeholder='username'
                         {...field}
+                        value={field?.value || ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -148,6 +150,7 @@ const Body = () => {
                       <Input
                         placeholder='email'
                         {...field}
+                        value={field?.value || ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -165,6 +168,7 @@ const Body = () => {
                           placeholder='password'
                           type={showPassword ? "text" : "password"}
                           {...field}
+                          value={field?.value || ""}
                         />
                         <div onClick={() => setShowPassword(!showPassword)}>
                           {showPassword ? (
@@ -187,6 +191,7 @@ const Body = () => {
               />
               <Button
                 type='submit'
+                name='continue'
                 disabled={loading}
                 className='w-full'>
                 Continue

@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/store/authStore";
 import Header from "../_components/header";
 import { Button } from "@/components/ui/button";
-import { Pencil1Icon } from "@radix-ui/react-icons";
+import { EyeClosedIcon, EyeOpenIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import CustomDialog from "../_components/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,16 +13,20 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Profile() {
   const { user } = useAuthStore();
+  const [showPassword, setShowPassword] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
   const [forms, setForms] = useState({
-    username: user?.username,
+    username: "",
     password: "",
   });
   const setUser = useAuthStore((state) => state.setUser);
 
   async function updateAccount() {
     try {
+      if (forms?.username?.length <= 2)
+        throw new Error("username must be at least 2 characters");
+
       let response = await fetch("/api/profile", {
         method: "POST",
         body: JSON.stringify({
@@ -45,7 +49,6 @@ export default function Profile() {
       document.getElementById("closeDialog")?.click();
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
@@ -81,7 +84,6 @@ export default function Profile() {
       signOut();
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
@@ -94,7 +96,7 @@ export default function Profile() {
 
   return (
     <div className='flex w-screen h-screen max-h-screen justify-center place-content-center'>
-      <div className='md:max-w-[60vw]  w-full'>
+      <div className='md:max-w-[60vw] w-full'>
         <Header />
         <div className='xl:p-24 md:p-16 p-12 flex flex-col gap-4'>
           <>
@@ -105,11 +107,12 @@ export default function Profile() {
 
               <CustomDialog
                 title='Edit profile'
+                id='edit'
                 desc="Make changes to your profile here. Click save when you're done."
                 handleSubmit={{
                   onClick: () => updateAccount(),
                   text: "Save Changes",
-                  disabled: false,
+                  disabled: !forms?.username,
                 }}
                 renderContent={
                   <div className='grid gap-4 py-4'>
@@ -121,7 +124,8 @@ export default function Profile() {
                       </Label>
                       <Input
                         id='username'
-                        value={forms?.username}
+                        value={forms?.username || ""}
+                        placeholder='username'
                         className='col-span-3'
                         onChange={(val) =>
                           setForms((old) => ({
@@ -135,12 +139,11 @@ export default function Profile() {
                 }>
                 <Button
                   variant={"ghost"}
-                  className='p-4 rounded-full h-full'>
-                  <Pencil1Icon
-                    width={42}
-                    height={42}
-                    className='text-primary'
-                  />
+                  name='submit'
+                  data-testid='edit-profile-button'
+                  className='p-4 rounded-full h-full sm:w-fit w-full sm:bg-transparent bg-primary sm:text-primary text-primary-foreground'>
+                  <span className='sm:hidden flex mr-2'>Update Profile </span>
+                  <Pencil1Icon className='sm:w-8 sm:h-8 w-6 h-6 ' />
                 </Button>
               </CustomDialog>
             </div>
@@ -152,12 +155,13 @@ export default function Profile() {
             </div>
           </>
           <CustomDialog
-            title='Edit profile'
-            desc="Make changes to your profile here. Click save when you're done."
+            id='delete'
+            title='Delete profile'
+            desc="Delete your profile. Click delete when you're done."
             handleSubmit={{
               onClick: () => deleteAccount(),
-              text: "Delete Account",
-              disabled: false,
+              text: "Delete My Account",
+              disabled: !forms?.password,
             }}
             renderContent={
               <div className='grid gap-4 py-4'>
@@ -167,22 +171,40 @@ export default function Profile() {
                     className='text-right'>
                     password
                   </Label>
-                  <Input
-                    id='password'
-                    value={forms?.password}
-                    className='col-span-3'
-                    onChange={(val) =>
-                      setForms((old) => ({
-                        ...old,
-                        password: val?.target?.value,
-                      }))
-                    }
-                  />
+                  <div className='flex flex-row items-center w-full gap-4 col-span-3'>
+                    <Input
+                      id='password'
+                      type={showPassword ? "text" : "password"}
+                      value={forms?.password || ""}
+                      onChange={(val) =>
+                        setForms((old) => ({
+                          ...old,
+                          password: val?.target?.value,
+                        }))
+                      }
+                    />
+                    <div
+                      id='toggle-password'
+                      onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? (
+                        <EyeOpenIcon
+                          width={24}
+                          height={24}
+                        />
+                      ) : (
+                        <EyeClosedIcon
+                          width={24}
+                          height={24}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             }>
             <Button
               className='flex items-start w-fit p-0 text-destructive'
+              data-testid='delete-profile-button'
               variant={"link"}>
               Delete Account
             </Button>

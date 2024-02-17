@@ -11,12 +11,14 @@ import {
 } from "@/components/ui/dialog";
 
 export default function CustomDialog({
+  id,
   children,
   title,
   desc,
   renderContent,
   handleSubmit,
 }: Readonly<{
+  id: string | number;
   children: React.ReactNode;
   title: string;
   desc: string;
