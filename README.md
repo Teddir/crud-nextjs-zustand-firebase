@@ -11,6 +11,8 @@ Welcome to our website documentation. This guide provides comprehensive instruct
 5. [Firebase Integration](#firebase-integration)
 6. [Testing with Jest](#testing-with-jest)
 7. [Running Tests](#running-tests)
+8. [Installation](#installation)
+9. [Contributing](#contributing-to-the-project)
 
 ## Introduction
 
@@ -114,3 +116,136 @@ npm run test loginPage.test.jsx
 ---
 
 This documentation provides a foundational overview to get started with the project. For further details, refer to specific documentation on Next.js, Zustand, Firebase, and Jest.
+
+## Running the Website
+
+This section guides you through the process of getting the website up and running on your local machine, from cloning the repository to starting the development server.
+
+### Cloning the Repository
+
+1. **Find the Repository URL**: Navigate to the GitHub page of the project and locate the repository's URL. It should look something like `https://github.com/username/project-name.git`.
+
+2. **Clone the Repository**: Open a terminal on your computer and run the following command, replacing `<repository-url>` with the actual URL of the repository:
+
+   ```bash
+   git clone <repository-url>
+   ```
+
+   This command downloads the project files to your local machine.
+
+### Installation
+
+Once you have cloned the repository, you need to install the necessary dependencies to run the project.
+
+1. **Navigate to the Project Directory**: Change your current directory to the project's root directory using the `cd` command:
+
+   ```bash
+   cd project-name
+   ```
+
+   Replace `project-name` with the name of the folder created by the `git clone` command.
+
+2. **Install Dependencies**: Run the following command to install the project dependencies:
+
+   - Using npm:
+
+     ```bash
+     npm install
+     ```
+
+   - Using Yarn:
+
+     ```bash
+     yarn
+     ```
+
+   This command reads the `package.json` file and installs the required packages listed under `dependencies` and `devDependencies`.
+
+### Running the Development Server
+
+With the dependencies installed, you can now start the development server.
+
+- **Using npm**:
+
+  ```bash
+  npm run dev
+  ```
+
+- **Using Yarn**:
+
+  ```bash
+  yarn dev
+  ```
+
+This command starts the Next.js development server, usually accessible at `http://localhost:3000` in your web browser. You should see the website running and be able to interact with it.
+
+### Summary
+
+By following these steps, you've cloned the project repository, installed its dependencies, and started the development server. You're now ready to explore the website's functionality, make changes, and test them in real-time. Remember to consult the project's README or other documentation for any specific setup instructions or environment variables that might be required.
+
+## Contributing to the Project
+
+If you're interested in contributing to the project, here's a guide to help you get started with making changes and submitting your contributions.
+
+### Creating a New Branch
+
+Before making any changes, it's a good practice to create a new branch. This keeps the main branch stable and makes it easier to manage multiple contributions.
+
+1. **Check Out to the Main Branch**: Ensure you're on the main branch and it's up to date.
+
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+
+2. **Create and Switch to a New Branch**: Replace `<branch-name>` with a descriptive name for your new branch.
+
+   ```bash
+   git checkout -b <branch-name>
+   ```
+
+### Making Changes
+
+With your new branch checked out, you're ready to make changes. Feel free to edit, add or remove files as necessary for your contribution.
+
+### Committing Changes
+
+After making changes, you should commit them to your branch using meaningful commit messages. We follow conventional commit messages to make the history more readable and to automate versioning and changelog generation.
+
+#### Commit Message Format
+
+- `feat`: Introduces a new feature.
+- `fix`: Fixes a bug.
+- `docs`: Adds or updates documentation.
+- `add`: Adds files or assets.
+
+#### Example Commit
+
+After staging your changes with `git add`, you can commit them:
+
+```bash
+git commit -m "feat: add user profile page"
+```
+
+This message indicates you've added a new feature, specifically a user profile page.
+
+### Pushing Changes
+
+Once your changes are committed, push them to the remote repository:
+
+```bash
+git push origin <branch-name>
+```
+
+### Submitting a Pull Request
+
+After pushing your changes, go to the repository on GitHub. You should see an option to "Compare & pull request." Click it, provide a detailed description of your changes, and submit the pull request (PR).
+
+### Best Practices for Contribution
+
+- **Keep PRs Small**: Aim for small, manageable PRs that address specific issues or introduce single features. This makes reviewing easier.
+- **Update Tests**: If your changes affect the code's behavior, update existing tests or add new ones as necessary.
+- **Follow Project Guidelines**: Adhere to any contribution guidelines provided in the project's README or contributing guide.
+- **Engage in the Review Process**: Respond to comments and requests from the project maintainers during the PR review process.
+
+By following these steps and best practices, you can effectively contribute to the project and collaborate with the community.
