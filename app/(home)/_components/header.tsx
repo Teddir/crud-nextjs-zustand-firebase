@@ -21,8 +21,9 @@ export default function Header() {
       let response = await fetch(`/api/profile?uid=${session?.user.id}`, {
         method: "GET",
       });
+
+      if (!response.ok) throw new Error("Error get profile");
       let res = await response.json();
-      console.log(res);
 
       if (session?.user?.email) {
         // If there's a session, update the Zustand store
@@ -35,7 +36,7 @@ export default function Header() {
         setUser(null);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }, [status, session]);
 

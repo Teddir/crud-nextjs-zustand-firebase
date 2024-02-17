@@ -45,7 +45,6 @@ export default function Profile() {
       document.getElementById("closeDialog")?.click();
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
@@ -81,7 +80,6 @@ export default function Profile() {
       signOut();
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
@@ -105,6 +103,7 @@ export default function Profile() {
 
               <CustomDialog
                 title='Edit profile'
+                id='edit'
                 desc="Make changes to your profile here. Click save when you're done."
                 handleSubmit={{
                   onClick: () => updateAccount(),
@@ -121,7 +120,8 @@ export default function Profile() {
                       </Label>
                       <Input
                         id='username'
-                        value={forms?.username}
+                        value={forms?.username || ""}
+                        placeholder='username'
                         className='col-span-3'
                         onChange={(val) =>
                           setForms((old) => ({
@@ -135,6 +135,8 @@ export default function Profile() {
                 }>
                 <Button
                   variant={"ghost"}
+                  name='submit'
+                  data-testid='edit-profile-button'
                   className='p-4 rounded-full h-full'>
                   <Pencil1Icon
                     width={42}
@@ -152,11 +154,12 @@ export default function Profile() {
             </div>
           </>
           <CustomDialog
-            title='Edit profile'
-            desc="Make changes to your profile here. Click save when you're done."
+            id='delete'
+            title='Delete profile'
+            desc="Delete your profile. Click save when you're done."
             handleSubmit={{
               onClick: () => deleteAccount(),
-              text: "Delete Account",
+              text: "Delete My Account",
               disabled: false,
             }}
             renderContent={
@@ -169,7 +172,7 @@ export default function Profile() {
                   </Label>
                   <Input
                     id='password'
-                    value={forms?.password}
+                    value={forms?.password || ""}
                     className='col-span-3'
                     onChange={(val) =>
                       setForms((old) => ({
@@ -183,6 +186,7 @@ export default function Profile() {
             }>
             <Button
               className='flex items-start w-fit p-0 text-destructive'
+              data-testid='delete-profile-button'
               variant={"link"}>
               Delete Account
             </Button>

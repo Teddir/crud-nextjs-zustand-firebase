@@ -1,8 +1,5 @@
 "use client";
-import { SiteIcon } from "@/public";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,10 +7,8 @@ import * as z from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -25,16 +20,22 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "../_components/navbar";
 
 const formSchema = z.object({
-  email: z.string().min(2, {
-    message: "email must be at least 2 characters.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
+  email: z
+    .string()
+    .min(2, {
+      message: "email must be at least 2 characters.",
+    })
+    .default(""),
+  password: z
+    .string()
+    .min(8, {
+      message: "Password must be at least 8 characters.",
+    })
+    .default(""),
 });
 
 export default function Login() {
-  const { data: session, status } = useSession();
+  const { status } = useSession() || { status: "unauthenticated" };
   const router = useRouter();
   const navbar = useMemo(
     () => (
@@ -128,6 +129,7 @@ const Body = () => {
                       <Input
                         placeholder='email'
                         {...field}
+                        value={field?.value || ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -145,8 +147,11 @@ const Body = () => {
                           placeholder='password'
                           type={showPassword ? "text" : "password"}
                           {...field}
+                          value={field?.value || ""}
                         />
-                        <div onClick={() => setShowPassword(!showPassword)}>
+                        <div
+                          id='toggle-password'
+                          onClick={() => setShowPassword(!showPassword)}>
                           {showPassword ? (
                             <EyeOpenIcon
                               width={24}
@@ -167,6 +172,7 @@ const Body = () => {
               />
               <Button
                 type='submit'
+                name='continue'
                 disabled={loading}
                 className='w-full'>
                 Continue
